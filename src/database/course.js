@@ -43,18 +43,18 @@ function getTeachers(courseId) {
 /**
  * select courses by tags from course table
  */
-async function list(params) {
+function list(params) {
   return new Promise( (resolve, reject) => {
     let result = new Array();
     connection.query(
-      'SELECT * FROM course_tag '+
-      'left join course on course.course_id = course_tag.course_id '+
+      'SELECT * FROM course '+
+      'left join course_tag on course_tag.course_id = course.course_id '+
       'WHERE course_tag.tag_id in (?)',
       params['tag_ids'],
-      (error, courses) => {
+      async (error, courses) => {
         if(error) reject("Something wrong has happend with database！");
         else if(courses.length) {
-          for(course of courses) {
+          courses.forEach( async course => {
             getTeachers(course['course_id'])
             .then( teachers => {
               result.push({
@@ -70,9 +70,27 @@ async function list(params) {
                 "course_mode":       course['course_mode'],
                 "teachers":          teachers
               });
+            })
+          })
+          for(course of courses) {
+            await getTeachers(course['course_id'])
+            .then( teachers => {
+              result.push({
+                "course_id":         course['course_id'],
+                "course_name":       course['course_name'],
+                "course_intro":      course['course_intro'],
+                "course_capacity":   course['course_capacity'],
+                "course_price":      course['course_price'],
+                "course_status":     course['course_status'],
+                "created_time":      course['created_time'],
+                "course_start_time": course['course_start_time'],
+                "course_hours":      course['course_hours'],
+                "course_mode":       course['course_mode'],
+                "teachers":          teachers
+              });
             });
-            resolve(result);
           }
+          resolve(result);
         }
         else reject("Not found any course！");
       }
