@@ -4,7 +4,7 @@ const purchase = require('../database/purchase');
  * 
  */
 function createPurchase(req, res) {
-  purchase.create(req.query)
+  purchase.create(req.body)
   .then( response => {
     res.send({
       "status": "1",
