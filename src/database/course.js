@@ -1,8 +1,8 @@
 const mysql = require('mysql');
 const connection = mysql.createConnection({
   host     : 'localhost',
-  user     : 'root',
-  password : '@Fenri1234',
+  user     : 'leadpack',
+  password : 'Le@dpack1113',
   database : 'welead'
 });
 
@@ -54,24 +54,6 @@ function list(params) {
       async (error, courses) => {
         if(error) reject("Something wrong has happend with database！");
         else if(courses.length) {
-          courses.forEach( async course => {
-            getTeachers(course['course_id'])
-            .then( teachers => {
-              result.push({
-                "course_id":         course['course_id'],
-                "course_name":       course['course_name'],
-                "course_intro":      course['course_intro'],
-                "course_capacity":   course['course_capacity'],
-                "course_price":      course['course_price'],
-                "course_status":     course['course_status'],
-                "created_time":      course['created_time'],
-                "course_start_time": course['course_start_time'],
-                "course_hours":      course['course_hours'],
-                "course_mode":       course['course_mode'],
-                "teachers":          teachers
-              });
-            })
-          })
           for(course of courses) {
             await getTeachers(course['course_id'])
             .then( teachers => {
@@ -109,10 +91,10 @@ function get(courseId) {
       'left join course on course.course_id = course_tag.course_id '+
       'WHERE course_tag.course_id = ?',
       [courseId],
-      (error, course) => {
+      async (error, course) => {
         if(error) reject("Something wrong has happend with database！");
         else if(course.length) {
-          getTeachers(courseId)
+          await getTeachers(courseId)
           .then( teachers => {
             result = {
               "course_id":         course['course_id'],
