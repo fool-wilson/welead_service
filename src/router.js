@@ -2,7 +2,13 @@ const express = require('express');
 const router = express();
 const methods = require('./methods/methods')
 
-router.use(express.json()) // for parsing application/json
+router.use((req, res, next) => {
+  res.append('Access-Control-Allow-Origin', ['*']);
+  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+router.use(express.json()); // for parsing application/json
 // router.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 router.get('/teachers', methods.listTeachers);
