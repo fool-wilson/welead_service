@@ -6,6 +6,7 @@ const user = require('../database/user');
  * @param {*} res response
  */
 function loginUser(req, res) {
+  console.log(req.body);
   user.login(req.body)
   .then( response => res.send({
     "status": "1",

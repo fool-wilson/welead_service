@@ -47,7 +47,8 @@ function create(params) {
           }
         }
       );
-    });
+    })
+    .catch( () => reject("Can't get user id！"));
   });
 }
 
